@@ -167,8 +167,9 @@
   <div id="list"></div>
 
   <div class="disclaimer">
-    ※ 期限・個数・届出先・優先度はあくまで一般的な目安です。お住まいの自治体・勤務先・産院によって条件が異なるため、
-    必ず各窓口や産院でご確認ください。<br />
+    ※ このリストは「ママ＝公務員（共済組合）・パパ＝個人事業主（国民健康保険）・東京都日野市在住」の前提で作られています。<br />
+    ※ 期限・個数・金額・届出先は2026年時点の一般的な情報に基づく目安です。制度は変わることがあるため、
+    必ず日野市役所・勤務先（共済組合）・産院で最新情報をご確認ください。<br />
     ※ チェックの状態はこの端末のブラウザ内にのみ保存されます（他の端末とは共有されません）。
   </div>
 
@@ -196,8 +197,10 @@
     { id: "prep-taxi", cat: "prep", title: "陣痛タクシーの登録", priority: "recommend", due: { base: "due", offsetDays: -30 }, note: "地域の陣痛タクシーに事前登録しておくと安心。" },
     { id: "prep-bag", cat: "prep", title: "入院バッグの準備", priority: "must", due: { base: "due", offsetDays: -30 }, note: "母子手帳・保険証・診察券・パジャマ・産褥用品など。すぐ持ち出せる場所に。" },
     { id: "prep-birthplan", cat: "prep", title: "バースプランの作成", priority: "optional", due: { base: "due", offsetDays: -30 }, note: "希望する出産のかたちを産院に共有。" },
+    { id: "prep-sankyu", cat: "prep", title: "産前産後休暇の申請（妻の勤務先）", priority: "must", due: { base: "due", offsetDays: -70 }, note: "公務員の産休は有給（給与満額支給）。産前休暇の開始時期（多くは予定日の8週間前から）と手続きを勤務先に確認。" },
     { id: "prep-satogaeri", cat: "prep", title: "里帰り出産の準備（該当する場合）", priority: "optional", due: { base: "due", offsetDays: -45 }, note: "移動手段・時期・実家での受け入れ準備。" },
-    { id: "prep-support", cat: "prep", title: "産後の家事・サポート体制の確認", priority: "recommend", due: { base: "due", offsetDays: -30 }, note: "パートナーの育休、家事代行、産後ケアサービスなど。" },
+    { id: "prep-sangocare", cat: "prep", title: "日野市 産後ケア事業の利用申請", priority: "recommend", due: { base: "due", offsetDays: -30 }, note: "助産師による休息・授乳・育児のサポート。承認まで1週間ほどかかるため、妊娠中の申請がおすすめ / 日野市。" },
+    { id: "prep-support", cat: "prep", title: "産後の家事・サポート体制の確認", priority: "recommend", due: { base: "due", offsetDays: -30 }, note: "夫は育休給付がない分、仕事の調整・家事分担の計画を具体的に。家事代行や産後ケアも活用。" },
 
     // ---- 買い物リスト（予定日基準） ----
     // ねんね・寝具
@@ -258,16 +261,18 @@
     { id: "buy-cushion", cat: "shopping", sub: "ママ（産後）の準備品", title: "円座クッション", priority: "optional", qty: "1", due: null, note: "会陰の痛み対策に。" },
 
     // ---- 行政手続き（出産日基準） ----
-    { id: "adm-birth", cat: "admin", title: "出生届の提出", priority: "must", due: { base: "birth", offsetDays: 14 }, note: "出産日を含め14日以内 / 市区町村役場。出生証明書（産院記入）が必要。" },
-    { id: "adm-child", cat: "admin", title: "児童手当の認定請求", priority: "must", due: { base: "birth", offsetDays: 15 }, note: "出産日の翌日から15日以内 / 市区町村役場。遅れると受給開始が遅れます。" },
-    { id: "adm-insurance", cat: "admin", title: "赤ちゃんの健康保険 加入", priority: "must", due: { base: "birth", offsetDays: 30 }, note: "できるだけ速やかに（1ヶ月健診まで）/ 勤務先 または 市区町村。" },
-    { id: "adm-medical", cat: "admin", title: "乳幼児医療費助成の申請", priority: "must", due: { base: "birth", offsetDays: 30 }, note: "健康保険加入後 / 市区町村役場。医療費が助成されます。" },
-    { id: "adm-lumpsum", cat: "admin", title: "出産育児一時金の手続き", priority: "must", due: { base: "birth", offsetDays: 0 }, note: "産院の「直接支払制度」を使えば手続きは簡単 / 健康保険。" },
-    { id: "adm-allowance", cat: "admin", title: "出産手当金の申請（働くママ）", priority: "recommend", due: { base: "birth", offsetDays: 56 }, note: "産休を取得した方 / 勤務先経由で健康保険へ。" },
-    { id: "adm-ikukyu", cat: "admin", title: "育児休業給付金の申請", priority: "recommend", due: { base: "birth", offsetDays: 60 }, note: "育休を取得する方 / 勤務先→ハローワーク。" },
-    { id: "adm-highcost", cat: "admin", title: "高額療養費の申請（帝王切開など）", priority: "optional", due: null, note: "医療費が高額になった場合 / 健康保険。限度額適用認定証を事前取得すると窓口負担が軽減。" },
-    { id: "adm-preemie", cat: "admin", title: "未熟児養育医療給付（該当する場合）", priority: "optional", due: null, note: "低出生体重などで入院治療が必要な場合 / 市区町村。" },
-    { id: "adm-deduction", cat: "admin", title: "医療費控除の準備（領収書の保管）", priority: "optional", due: null, note: "出産関連の領収書を保管し、翌年の確定申告で控除 / 税務署。" },
+    // 前提: 妻＝公務員（共済組合）・夫＝個人事業主（国民健康保険）・東京都日野市在住
+    { id: "adm-birth", cat: "admin", title: "出生届の提出", priority: "must", due: { base: "birth", offsetDays: 14 }, note: "出産日を含めて14日以内 / 日野市役所 市民窓口課。出生証明書（産院が記入）が必要。児童手当などの同時申請もできます。" },
+    { id: "adm-child", cat: "admin", title: "児童手当の認定請求", priority: "must", due: { base: "birth", offsetDays: 15 }, note: "出生の翌日から15日以内 / 日野市役所。0〜2歳は月15,000円・所得制限なし。出生届と同時申請がスムーズ。遅れると遡って受給できません。" },
+    { id: "adm-insurance", cat: "admin", title: "赤ちゃんの健康保険加入（妻の共済組合の被扶養者に）", priority: "must", due: { base: "birth", offsetDays: 14 }, note: "妻の勤務先で被扶養者認定の手続き。夫は国民健康保険（扶養の仕組みがない）ため、共済組合の扶養に入れるのが有利。マル乳の申請に必要なので早めに。" },
+    { id: "adm-medical", cat: "admin", title: "子ども医療費助成（マル乳）の申請", priority: "must", due: { base: "birth", offsetDays: 60 }, note: "出生から2カ月以内に申請すると出生日にさかのぼって適用 / 日野市 子ども包括支援センター「みらいく」。赤ちゃんの保険加入後に。" },
+    { id: "adm-lumpsum", cat: "admin", title: "出産費（出産育児一時金）の手続き", priority: "must", due: { base: "birth", offsetDays: 0 }, note: "妻の共済組合から50万円＋附加給付。産院の「直接支払制度」を使えば手続きは簡単。出産費用が50万円未満なら差額を請求できます。" },
+    { id: "adm-babyfirst", cat: "admin", title: "東京都 赤ちゃんファースト・018サポートの申請", priority: "must", due: { base: "birth", offsetDays: 60 }, note: "赤ちゃんファースト＝10万円分の育児用品ギフト、018サポート＝月5,000円。オンラインで同時申請できます / 東京都。" },
+    { id: "adm-ikukyu", cat: "admin", title: "育児休業手当金の申請（妻・共済組合）", priority: "recommend", due: { base: "birth", offsetDays: 60 }, note: "公務員は雇用保険の育児休業給付金ではなく、共済組合の「育児休業手当金」（開始180日まで67%、以降50%）。勤務先経由で申請。※夫（個人事業主）には育休給付の制度はありません。" },
+    { id: "adm-visit", cat: "admin", title: "出生通知票の提出（新生児訪問）", priority: "recommend", due: { base: "birth", offsetDays: 14 }, note: "母子手帳交付時にもらう出生通知票を提出すると、助産師・保健師が自宅に訪問してくれます / 日野市。" },
+    { id: "adm-highcost", cat: "admin", title: "高額療養費の申請（帝王切開など）", priority: "optional", due: null, note: "医療費が高額になった場合 / 妻の共済組合。限度額適用認定証（マイナ保険証でも可）で窓口負担が軽減されます。" },
+    { id: "adm-preemie", cat: "admin", title: "未熟児養育医療給付（該当する場合）", priority: "optional", due: null, note: "低出生体重などで入院治療が必要な場合 / 日野市。" },
+    { id: "adm-deduction", cat: "admin", title: "医療費控除の準備（領収書の保管）", priority: "optional", due: null, note: "夫は個人事業主なので確定申告の際に医療費控除も併せて。妊婦健診・出産・入院・通院交通費の領収書を保管しておく。" },
   ];
 
   const PRIORITY_ORDER = { must: 0, recommend: 1, optional: 2 };
