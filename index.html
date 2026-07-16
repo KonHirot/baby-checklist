@@ -1,0 +1,534 @@
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>出産・育児 準備チェックリスト</title>
+<style>
+  :root {
+    --bg: #fbf7f4;
+    --card: #ffffff;
+    --text: #3a3330;
+    --muted: #8a807a;
+    --line: #efe7e1;
+    --accent: #e8859a;
+    --accent-dark: #d46a82;
+    --must: #e5556e;
+    --must-bg: #fdecef;
+    --recommend: #e8912f;
+    --recommend-bg: #fdf1e2;
+    --optional: #9a9088;
+    --optional-bg: #f2eeea;
+    --ok: #4caf8f;
+    --warn: #e0a52e;
+    --danger: #e5556e;
+    --shadow: 0 2px 10px rgba(150, 110, 100, 0.08);
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Hiragino Sans", "Yu Gothic", "Segoe UI", sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+    -webkit-text-size-adjust: 100%;
+  }
+  .wrap { max-width: 720px; margin: 0 auto; padding: 16px 14px 80px; }
+
+  header.app { text-align: center; padding: 18px 0 6px; }
+  header.app h1 { font-size: 1.35rem; margin: 0 0 4px; letter-spacing: 0.02em; }
+  header.app .sub { color: var(--muted); font-size: 0.82rem; margin: 0; }
+
+  /* countdown / date card */
+  .datecard {
+    background: var(--card); border-radius: 16px; box-shadow: var(--shadow);
+    padding: 16px; margin: 14px 0;
+  }
+  .countdown { text-align: center; margin-bottom: 10px; }
+  .countdown .big { font-size: 2rem; font-weight: 700; color: var(--accent-dark); line-height: 1.2; }
+  .countdown .big small { font-size: 0.9rem; color: var(--muted); font-weight: 400; }
+  .countdown .label { font-size: 0.82rem; color: var(--muted); }
+  .dates { display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; }
+  .field { display: flex; flex-direction: column; font-size: 0.78rem; color: var(--muted); }
+  .field label { margin-bottom: 3px; }
+  .field input[type="date"] {
+    font-size: 1rem; padding: 8px 10px; border: 1px solid var(--line);
+    border-radius: 10px; background: #fff; color: var(--text); font-family: inherit;
+  }
+
+  /* progress */
+  .progress-wrap { margin: 10px 0 0; }
+  .progress-top { display: flex; justify-content: space-between; align-items: baseline; font-size: 0.8rem; color: var(--muted); margin-bottom: 5px; }
+  .progress-top b { color: var(--accent-dark); font-size: 1rem; }
+  .bar { height: 10px; background: var(--line); border-radius: 6px; overflow: hidden; }
+  .bar > span { display: block; height: 100%; background: linear-gradient(90deg, var(--accent), var(--accent-dark)); border-radius: 6px; transition: width .35s ease; }
+
+  /* filters */
+  .filters { display: flex; gap: 8px; flex-wrap: wrap; margin: 14px 0 6px; }
+  .filters button {
+    font: inherit; font-size: 0.8rem; padding: 7px 12px; border-radius: 999px;
+    border: 1px solid var(--line); background: #fff; color: var(--muted); cursor: pointer;
+  }
+  .filters button.active { background: var(--accent); border-color: var(--accent); color: #fff; }
+  .filters .spacer { flex: 1; }
+  .filters .reset { color: var(--muted); border-style: dashed; }
+
+  /* sections */
+  section.cat { background: var(--card); border-radius: 16px; box-shadow: var(--shadow); margin: 14px 0; overflow: hidden; }
+  .cat-head {
+    display: flex; align-items: center; gap: 8px; padding: 14px 16px; cursor: pointer;
+    user-select: none; background: var(--card);
+  }
+  .cat-head .emoji { font-size: 1.2rem; }
+  .cat-head h2 { font-size: 1.02rem; margin: 0; flex: 1; }
+  .cat-head .count { font-size: 0.8rem; color: var(--muted); }
+  .cat-head .chev { color: var(--muted); transition: transform .2s; }
+  section.cat.collapsed .chev { transform: rotate(-90deg); }
+  section.cat.collapsed .cat-body { display: none; }
+  .cat-body { padding: 4px 8px 10px; }
+
+  .subhead { font-size: 0.78rem; color: var(--accent-dark); font-weight: 700; padding: 12px 10px 4px; letter-spacing: 0.03em; }
+
+  /* task row */
+  .task { display: flex; gap: 10px; padding: 9px 10px; border-radius: 12px; align-items: flex-start; }
+  .task:hover { background: #faf5f2; }
+  .task input[type="checkbox"] {
+    appearance: none; -webkit-appearance: none; width: 22px; height: 22px; margin: 2px 0 0;
+    border: 2px solid var(--accent); border-radius: 7px; cursor: pointer; flex: 0 0 auto; position: relative; background: #fff;
+  }
+  .task input[type="checkbox"]:checked { background: var(--accent); }
+  .task input[type="checkbox"]:checked::after {
+    content: ""; position: absolute; left: 6px; top: 2px; width: 5px; height: 10px;
+    border: solid #fff; border-width: 0 2.5px 2.5px 0; transform: rotate(45deg);
+  }
+  .task .body { flex: 1; min-width: 0; }
+  .task .title-line { display: flex; align-items: center; flex-wrap: wrap; gap: 6px; }
+  .task .name { font-size: 0.95rem; }
+  .task.done .name { text-decoration: line-through; color: var(--muted); }
+  .badge { font-size: 0.68rem; padding: 1px 8px; border-radius: 999px; white-space: nowrap; font-weight: 600; }
+  .badge.must { color: var(--must); background: var(--must-bg); }
+  .badge.recommend { color: var(--recommend); background: var(--recommend-bg); }
+  .badge.optional { color: var(--optional); background: var(--optional-bg); }
+  .badge.qty { color: var(--muted); background: #f4efeb; font-weight: 500; }
+  .task .note { font-size: 0.78rem; color: var(--muted); margin-top: 2px; }
+  /* 該当なし（スキップ） */
+  .task.skipped { opacity: 0.55; }
+  .task.skipped .name { color: var(--muted); }
+  .task.skipped input[type="checkbox"] { border-color: var(--line); background: #f4efeb; cursor: default; }
+  .badge.skipped-badge { color: #fff; background: var(--optional); }
+  .skip-btn {
+    font: inherit; font-size: 0.68rem; align-self: center; flex: 0 0 auto;
+    padding: 4px 9px; border-radius: 999px; border: 1px dashed var(--line);
+    background: transparent; color: var(--muted); cursor: pointer; white-space: nowrap;
+  }
+  .skip-btn:hover { border-color: var(--optional); color: var(--text); }
+
+  .due { font-size: 0.75rem; margin-top: 2px; display: inline-block; }
+  .due.normal { color: var(--muted); }
+  .due.soon { color: var(--warn); font-weight: 600; }
+  .due.over { color: var(--danger); font-weight: 600; }
+
+  .disclaimer { font-size: 0.74rem; color: var(--muted); background: #fff; border-radius: 12px; padding: 12px 14px; margin: 16px 0; box-shadow: var(--shadow); }
+  footer { text-align: center; color: var(--muted); font-size: 0.72rem; margin-top: 18px; }
+</style>
+
+<div class="wrap">
+  <header class="app">
+    <h1>👶 出産・育児 準備チェックリスト</h1>
+    <p class="sub">準備・お買い物・手続きを、ひとつずつ確認していきましょう。</p>
+  </header>
+
+  <div class="datecard">
+    <div class="countdown">
+      <div class="big" id="countdown">—</div>
+      <div class="label" id="countdown-label"></div>
+    </div>
+    <div class="dates">
+      <div class="field">
+        <label for="dueDate">出産予定日</label>
+        <input type="date" id="dueDate" />
+      </div>
+      <div class="field">
+        <label for="birthDate">出産日（生まれたら入力）</label>
+        <input type="date" id="birthDate" />
+      </div>
+    </div>
+    <div class="progress-wrap">
+      <div class="progress-top"><span>全体の進捗</span><span><b id="progText">0</b> / <span id="progTotal">0</span></span></div>
+      <div class="bar"><span id="progBar" style="width:0%"></span></div>
+    </div>
+  </div>
+
+  <div class="filters">
+    <button data-filter="all" class="active">すべて</button>
+    <button data-filter="todo">未完了のみ</button>
+    <button data-filter="must">必須のみ</button>
+    <span class="spacer"></span>
+    <button class="reset" id="resetBtn">リセット</button>
+  </div>
+
+  <div id="list"></div>
+
+  <div class="disclaimer">
+    ※ 期限・個数・届出先・優先度はあくまで一般的な目安です。お住まいの自治体・勤務先・産院によって条件が異なるため、
+    必ず各窓口や産院でご確認ください。<br />
+    ※ チェックの状態はこの端末のブラウザ内にのみ保存されます（他の端末とは共有されません）。
+  </div>
+
+  <footer>体を大切に、無理せずいきましょう 🌷</footer>
+</div>
+
+<script>
+  "use strict";
+
+  // ===== タスク定義 =====
+  // due: null | { base: 'due'|'birth', offsetDays: number }
+  // priority: 'must' | 'recommend' | 'optional'
+  const DEFAULT_DUE = "2026-09-25";
+
+  const CATEGORIES = [
+    { id: "prep", emoji: "🧳", title: "出産準備（手続き・段取り）" },
+    { id: "shopping", emoji: "🛒", title: "買い物リスト（ベビー用品ほか）" },
+    { id: "admin", emoji: "📄", title: "行政手続き（出産後）" },
+  ];
+
+  const TASKS = [
+    // ---- 出産準備（予定日基準） ----
+    { id: "prep-clinic", cat: "prep", title: "産院・分娩の予約", priority: "must", due: null, note: "妊娠初期に。里帰りの場合は転院先も確認。" },
+    { id: "prep-class", cat: "prep", title: "母親学級・両親学級の受講", priority: "recommend", due: { base: "due", offsetDays: -60 }, note: "自治体や産院が開催。沐浴・授乳の練習ができます。" },
+    { id: "prep-taxi", cat: "prep", title: "陣痛タクシーの登録", priority: "recommend", due: { base: "due", offsetDays: -30 }, note: "地域の陣痛タクシーに事前登録しておくと安心。" },
+    { id: "prep-bag", cat: "prep", title: "入院バッグの準備", priority: "must", due: { base: "due", offsetDays: -30 }, note: "母子手帳・保険証・診察券・パジャマ・産褥用品など。すぐ持ち出せる場所に。" },
+    { id: "prep-birthplan", cat: "prep", title: "バースプランの作成", priority: "optional", due: { base: "due", offsetDays: -30 }, note: "希望する出産のかたちを産院に共有。" },
+    { id: "prep-satogaeri", cat: "prep", title: "里帰り出産の準備（該当する場合）", priority: "optional", due: { base: "due", offsetDays: -45 }, note: "移動手段・時期・実家での受け入れ準備。" },
+    { id: "prep-support", cat: "prep", title: "産後の家事・サポート体制の確認", priority: "recommend", due: { base: "due", offsetDays: -30 }, note: "パートナーの育休、家事代行、産後ケアサービスなど。" },
+
+    // ---- 買い物リスト（予定日基準） ----
+    // ねんね・寝具
+    { id: "buy-bed", cat: "shopping", sub: "ねんね・寝具", title: "ベビーベッド または ベビー布団セット", priority: "recommend", qty: "1", due: { base: "due", offsetDays: -30 }, note: "レンタルも選択肢。" },
+    { id: "buy-sheet", cat: "shopping", sub: "ねんね・寝具", title: "防水シーツ・キルトパッド", priority: "recommend", qty: "各1〜2", due: { base: "due", offsetDays: -30 }, note: "洗い替え用に複数枚あると便利。" },
+    { id: "buy-swaddle", cat: "shopping", sub: "ねんね・寝具", title: "おくるみ・スワドル", priority: "recommend", qty: "2〜3枚", due: { base: "due", offsetDays: -30 }, note: "退院時やおひなまきにも。" },
+
+    // 授乳・ミルク
+    { id: "buy-bottle", cat: "shopping", sub: "授乳・ミルク", title: "哺乳瓶＋乳首", priority: "must", qty: "2〜3本", due: { base: "due", offsetDays: -21 }, note: "新生児用サイズ（S）から。" },
+    { id: "buy-milk", cat: "shopping", sub: "授乳・ミルク", title: "粉ミルク または 液体ミルク", priority: "must", qty: "1", due: { base: "due", offsetDays: -14 }, note: "母乳の予定でも、もしもの時用に1つあると安心。" },
+    { id: "buy-sterilize", cat: "shopping", sub: "授乳・ミルク", title: "哺乳瓶の消毒用品", priority: "must", qty: "1", due: { base: "due", offsetDays: -21 }, note: "電子レンジ用・薬液・煮沸などお好みで。" },
+    { id: "buy-nursingpillow", cat: "shopping", sub: "授乳・ミルク", title: "授乳クッション", priority: "recommend", qty: "1", due: { base: "due", offsetDays: -21 }, note: "授乳が楽になります。" },
+    { id: "buy-breastpad", cat: "shopping", sub: "授乳・ミルク", title: "母乳パッド", priority: "recommend", qty: "1箱", due: { base: "due", offsetDays: -14 }, note: "使い捨てタイプが手軽。" },
+    { id: "buy-pump", cat: "shopping", sub: "授乳・ミルク", title: "搾乳器", priority: "optional", qty: "1", due: null, note: "必要になってからでOK。" },
+    { id: "buy-warmer", cat: "shopping", sub: "授乳・ミルク", title: "ミルクウォーマー・調乳ポット", priority: "optional", qty: "1", due: null, note: "夜間の調乳が楽に。" },
+
+    // おむつ・おしり周り
+    { id: "buy-diaper", cat: "shopping", sub: "おむつ・おしり周り", title: "新生児用 紙おむつ", priority: "must", qty: "1〜2パック", due: { base: "due", offsetDays: -14 }, note: "買いすぎ注意（すぐサイズアップします）。" },
+    { id: "buy-wipes", cat: "shopping", sub: "おむつ・おしり周り", title: "おしりふき", priority: "must", qty: "数個", due: { base: "due", offsetDays: -14 }, note: "多めにあっても困りません。" },
+    { id: "buy-diaperbin", cat: "shopping", sub: "おむつ・おしり周り", title: "おむつ用ゴミ箱", priority: "recommend", qty: "1", due: { base: "due", offsetDays: -14 }, note: "においが気になる方に。" },
+    { id: "buy-babycream", cat: "shopping", sub: "おむつ・おしり周り", title: "ベビー用綿棒・おしり保湿クリーム", priority: "recommend", qty: "各1", due: { base: "due", offsetDays: -14 }, note: "おむつかぶれ対策に。" },
+    { id: "buy-changemat", cat: "shopping", sub: "おむつ・おしり周り", title: "おむつ替えシート", priority: "optional", qty: "1〜2", due: null, note: "防水タイプが便利。" },
+
+    // 衣類
+    { id: "buy-tanhada", cat: "shopping", sub: "衣類", title: "短肌着", priority: "must", qty: "5〜6枚", due: { base: "due", offsetDays: -21 }, note: "季節に合わせて素材を選んで。" },
+    { id: "buy-combi", cat: "shopping", sub: "衣類", title: "コンビ肌着 または 長肌着", priority: "must", qty: "3〜4枚", due: { base: "due", offsetDays: -21 }, note: "短肌着と重ねて着せます。" },
+    { id: "buy-twoway", cat: "shopping", sub: "衣類", title: "ツーウェイオール・新生児服", priority: "must", qty: "3〜4枚", due: { base: "due", offsetDays: -21 }, note: "50〜60サイズから。" },
+    { id: "buy-mitten", cat: "shopping", sub: "衣類", title: "ミトン・帽子・靴下", priority: "optional", qty: "各1〜2", due: null, note: "季節・お出かけ用に。" },
+    { id: "buy-ceremony", cat: "shopping", sub: "衣類", title: "セレモニードレス（退院着）", priority: "optional", qty: "1", due: { base: "due", offsetDays: -14 }, note: "退院・お宮参り用。無くてもOK。" },
+
+    // 沐浴・衛生
+    { id: "buy-babybath", cat: "shopping", sub: "沐浴・衛生", title: "ベビーバス", priority: "must", qty: "1", due: { base: "due", offsetDays: -21 }, note: "空気式・折りたたみ式などコンパクトなものも。" },
+    { id: "buy-soap", cat: "shopping", sub: "沐浴・衛生", title: "ベビーソープ", priority: "must", qty: "1", due: { base: "due", offsetDays: -21 }, note: "泡タイプが片手で使えて便利。" },
+    { id: "buy-gauze", cat: "shopping", sub: "沐浴・衛生", title: "沐浴布・ガーゼ", priority: "must", qty: "5〜10枚", due: { base: "due", offsetDays: -21 }, note: "授乳・沐浴・よだれ拭きに大活躍。" },
+    { id: "buy-thermometer", cat: "shopping", sub: "沐浴・衛生", title: "ベビー用体温計", priority: "recommend", qty: "1", due: { base: "due", offsetDays: -14 }, note: "短時間で測れるタイプが便利。" },
+    { id: "buy-nailclip", cat: "shopping", sub: "沐浴・衛生", title: "ベビー用爪切り・綿棒", priority: "recommend", qty: "各1", due: { base: "due", offsetDays: -14 }, note: "新生児の爪はすぐ伸びます。" },
+    { id: "buy-lotion", cat: "shopping", sub: "沐浴・衛生", title: "ベビー保湿ローション", priority: "recommend", qty: "1", due: { base: "due", offsetDays: -14 }, note: "沐浴後の保湿に。" },
+    { id: "buy-thermo", cat: "shopping", sub: "沐浴・衛生", title: "湯温計", priority: "optional", qty: "1", due: null, note: "沐浴のお湯の温度確認に。" },
+
+    // おでかけ・移動
+    { id: "buy-carseat", cat: "shopping", sub: "おでかけ・移動", title: "チャイルドシート", priority: "must", qty: "1", due: { base: "due", offsetDays: -14 }, note: "退院時の車移動に必須。取り付けも事前に確認！" },
+    { id: "buy-stroller", cat: "shopping", sub: "おでかけ・移動", title: "ベビーカー", priority: "recommend", qty: "1", due: { base: "due", offsetDays: -7 }, note: "新生児から使えるA型 or 兼用タイプ。" },
+    { id: "buy-carrier", cat: "shopping", sub: "おでかけ・移動", title: "抱っこ紐", priority: "recommend", qty: "1", due: { base: "due", offsetDays: -7 }, note: "新生児対応か確認を。" },
+    { id: "buy-mothersbag", cat: "shopping", sub: "おでかけ・移動", title: "マザーズバッグ", priority: "optional", qty: "1", due: null, note: "手持ちのリュックで代用も可。" },
+
+    // お世話グッズ・その他
+    { id: "buy-nose", cat: "shopping", sub: "お世話グッズ・その他", title: "鼻吸い器", priority: "recommend", qty: "1", due: null, note: "鼻づまり対策に。電動タイプが人気。" },
+    { id: "buy-cape", cat: "shopping", sub: "お世話グッズ・その他", title: "授乳ケープ", priority: "optional", qty: "1", due: null, note: "外出時の授乳に。" },
+    { id: "buy-monitor", cat: "shopping", sub: "お世話グッズ・その他", title: "ベビーモニター", priority: "optional", qty: "1", due: null, note: "別室で寝かせる場合に。" },
+    { id: "buy-humid", cat: "shopping", sub: "お世話グッズ・その他", title: "加湿器", priority: "optional", qty: "1", due: null, note: "乾燥する季節に。" },
+    { id: "buy-diary", cat: "shopping", sub: "お世話グッズ・その他", title: "育児記録アプリ・育児日記", priority: "optional", qty: "1", due: null, note: "授乳・睡眠の記録に。" },
+
+    // ママ（産後）の準備品
+    { id: "buy-shorts", cat: "shopping", sub: "ママ（産後）の準備品", title: "産褥ショーツ", priority: "must", qty: "2〜3枚", due: { base: "due", offsetDays: -21 }, note: "入院時に必要。産院の指定を確認。" },
+    { id: "buy-pad", cat: "shopping", sub: "ママ（産後）の準備品", title: "産褥パッド・悪露用ナプキン", priority: "must", qty: "1セット", due: { base: "due", offsetDays: -21 }, note: "産院で用意される場合も。" },
+    { id: "buy-nursingbra", cat: "shopping", sub: "ママ（産後）の準備品", title: "授乳ブラ・授乳服", priority: "recommend", qty: "2〜3枚", due: { base: "due", offsetDays: -21 }, note: "前開き・授乳しやすいもの。" },
+    { id: "buy-belt", cat: "shopping", sub: "ママ（産後）の準備品", title: "骨盤ベルト", priority: "recommend", qty: "1", due: { base: "due", offsetDays: -14 }, note: "産後の骨盤ケアに。" },
+    { id: "buy-cushion", cat: "shopping", sub: "ママ（産後）の準備品", title: "円座クッション", priority: "optional", qty: "1", due: null, note: "会陰の痛み対策に。" },
+
+    // ---- 行政手続き（出産日基準） ----
+    { id: "adm-birth", cat: "admin", title: "出生届の提出", priority: "must", due: { base: "birth", offsetDays: 14 }, note: "出産日を含め14日以内 / 市区町村役場。出生証明書（産院記入）が必要。" },
+    { id: "adm-child", cat: "admin", title: "児童手当の認定請求", priority: "must", due: { base: "birth", offsetDays: 15 }, note: "出産日の翌日から15日以内 / 市区町村役場。遅れると受給開始が遅れます。" },
+    { id: "adm-insurance", cat: "admin", title: "赤ちゃんの健康保険 加入", priority: "must", due: { base: "birth", offsetDays: 30 }, note: "できるだけ速やかに（1ヶ月健診まで）/ 勤務先 または 市区町村。" },
+    { id: "adm-medical", cat: "admin", title: "乳幼児医療費助成の申請", priority: "must", due: { base: "birth", offsetDays: 30 }, note: "健康保険加入後 / 市区町村役場。医療費が助成されます。" },
+    { id: "adm-lumpsum", cat: "admin", title: "出産育児一時金の手続き", priority: "must", due: { base: "birth", offsetDays: 0 }, note: "産院の「直接支払制度」を使えば手続きは簡単 / 健康保険。" },
+    { id: "adm-allowance", cat: "admin", title: "出産手当金の申請（働くママ）", priority: "recommend", due: { base: "birth", offsetDays: 56 }, note: "産休を取得した方 / 勤務先経由で健康保険へ。" },
+    { id: "adm-ikukyu", cat: "admin", title: "育児休業給付金の申請", priority: "recommend", due: { base: "birth", offsetDays: 60 }, note: "育休を取得する方 / 勤務先→ハローワーク。" },
+    { id: "adm-highcost", cat: "admin", title: "高額療養費の申請（帝王切開など）", priority: "optional", due: null, note: "医療費が高額になった場合 / 健康保険。限度額適用認定証を事前取得すると窓口負担が軽減。" },
+    { id: "adm-preemie", cat: "admin", title: "未熟児養育医療給付（該当する場合）", priority: "optional", due: null, note: "低出生体重などで入院治療が必要な場合 / 市区町村。" },
+    { id: "adm-deduction", cat: "admin", title: "医療費控除の準備（領収書の保管）", priority: "optional", due: null, note: "出産関連の領収書を保管し、翌年の確定申告で控除 / 税務署。" },
+  ];
+
+  const PRIORITY_ORDER = { must: 0, recommend: 1, optional: 2 };
+  const PRIORITY_LABEL = { must: "必須", recommend: "推奨", optional: "あると便利" };
+
+  // ===== 状態 =====
+  const STORAGE_KEY = "shussan-ikuji-checklist";
+  let state = loadState();
+
+  function loadState() {
+    try {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if (raw) {
+        const s = JSON.parse(raw);
+        return { dueDate: s.dueDate || DEFAULT_DUE, birthDate: s.birthDate || "", checked: s.checked || {}, skipped: s.skipped || {} };
+      }
+    } catch (e) { /* ignore */ }
+    return { dueDate: DEFAULT_DUE, birthDate: "", checked: {}, skipped: {} };
+  }
+  function saveState() {
+    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch (e) { /* ignore */ }
+  }
+
+  let currentFilter = "all";
+
+  // ===== 日付ユーティリティ =====
+  function parseDate(str) {
+    if (!str) return null;
+    const [y, m, d] = str.split("-").map(Number);
+    if (!y || !m || !d) return null;
+    return new Date(y, m - 1, d);
+  }
+  function today() { const t = new Date(); return new Date(t.getFullYear(), t.getMonth(), t.getDate()); }
+  function addDays(date, n) { const d = new Date(date); d.setDate(d.getDate() + n); return d; }
+  function fmtDate(d) { return `${d.getMonth() + 1}月${d.getDate()}日`; }
+  function daysBetween(a, b) { return Math.round((b - a) / 86400000); }
+
+  // task -> 期限日(Date) or null
+  function computeDue(task) {
+    if (!task.due) return null;
+    const base = task.due.base === "birth"
+      ? parseDate(state.birthDate)
+      : parseDate(state.dueDate);
+    if (!base) return null;
+    return addDays(base, task.due.offsetDays);
+  }
+
+  // ===== レンダリング =====
+  const listEl = document.getElementById("list");
+
+  function taskVisible(task) {
+    if (currentFilter === "todo") return !state.checked[task.id] && !state.skipped[task.id];
+    if (currentFilter === "must") return task.priority === "must";
+    return true;
+  }
+
+  function render() {
+    // date inputs
+    document.getElementById("dueDate").value = state.dueDate || "";
+    document.getElementById("birthDate").value = state.birthDate || "";
+
+    renderCountdown();
+    renderList();
+    renderProgress();
+    document.querySelectorAll(".filters [data-filter]").forEach((b) => {
+      b.classList.toggle("active", b.dataset.filter === currentFilter);
+    });
+  }
+
+  function renderCountdown() {
+    const el = document.getElementById("countdown");
+    const label = document.getElementById("countdown-label");
+    const birth = parseDate(state.birthDate);
+    if (birth) {
+      const n = daysBetween(birth, today());
+      if (n >= 0) {
+        // 出産日が今日以前 → すでに生まれている
+        el.innerHTML = `ご出産おめでとうございます 🎉`;
+        label.textContent = `生後 ${n} 日目 ・ 手続きは出産日を基準に計算しています`;
+      } else {
+        // 出産日が未来（予定として入力された場合）
+        el.innerHTML = `出産日まで あと ${Math.abs(n)} 日`;
+        label.textContent = `${fmtDate(birth)} が出産日です ・ 手続きは出産日を基準に計算しています`;
+      }
+      return;
+    }
+    const due = parseDate(state.dueDate);
+    if (due) {
+      const n = daysBetween(today(), due);
+      if (n > 0) el.innerHTML = `予定日まで あと ${n} 日`;
+      else if (n === 0) el.innerHTML = `いよいよ予定日です 🌸`;
+      else el.innerHTML = `予定日から ${Math.abs(n)} 日`;
+      label.textContent = fmtDate(due) + " が予定日です";
+    } else {
+      el.textContent = "—";
+      label.textContent = "予定日を入力してください";
+    }
+  }
+
+  function priorityBadge(p) {
+    return `<span class="badge ${p}">${PRIORITY_LABEL[p]}</span>`;
+  }
+
+  function dueBadge(task) {
+    const d = computeDue(task);
+    if (!d) {
+      if (task.due) return `<div class="due normal">期限目安：日付を入力すると表示されます</div>`;
+      return "";
+    }
+    const diff = daysBetween(today(), d);
+    let cls = "normal", suffix;
+    if (diff < 0) { cls = "over"; suffix = `（${Math.abs(diff)}日 過ぎています）`; }
+    else if (diff === 0) { cls = "soon"; suffix = "（本日まで）"; }
+    else if (diff <= 7) { cls = "soon"; suffix = `（あと${diff}日）`; }
+    else { suffix = `（あと${diff}日）`; }
+    return `<div class="due ${cls}">🗓 ${fmtDate(d)}まで ${suffix}</div>`;
+  }
+
+  function renderList() {
+    listEl.innerHTML = "";
+    CATEGORIES.forEach((cat) => {
+      const tasks = TASKS.filter((t) => t.cat === cat.id);
+      const visibleTasks = tasks.filter(taskVisible);
+      // セクションのカウントも「該当なし」を分母から外す
+      const activeTasks = tasks.filter((t) => !state.skipped[t.id]);
+      const doneCount = activeTasks.filter((t) => state.checked[t.id]).length;
+
+      const section = document.createElement("section");
+      section.className = "cat";
+      section.dataset.cat = cat.id;
+
+      const head = document.createElement("div");
+      head.className = "cat-head";
+      head.innerHTML = `<span class="emoji">${cat.emoji}</span><h2>${cat.title}</h2>` +
+        `<span class="count">${doneCount} / ${activeTasks.length}</span><span class="chev">▾</span>`;
+      head.addEventListener("click", () => section.classList.toggle("collapsed"));
+      section.appendChild(head);
+
+      const bodyEl = document.createElement("div");
+      bodyEl.className = "cat-body";
+
+      // sort by sub-group order (keep定義順) then priority
+      let lastSub = null;
+      const ordered = stableSortTasks(visibleTasks);
+      if (ordered.length === 0) {
+        const empty = document.createElement("div");
+        empty.className = "note";
+        empty.style.padding = "10px 12px";
+        empty.textContent = "表示できる項目がありません（フィルタで絞り込み中）。";
+        bodyEl.appendChild(empty);
+      }
+      ordered.forEach((task) => {
+        if (task.sub && task.sub !== lastSub) {
+          const sh = document.createElement("div");
+          sh.className = "subhead";
+          sh.textContent = task.sub;
+          bodyEl.appendChild(sh);
+          lastSub = task.sub;
+        }
+        bodyEl.appendChild(renderTask(task));
+      });
+
+      section.appendChild(bodyEl);
+      listEl.appendChild(section);
+    });
+  }
+
+  // グループ（sub）ごとにまとめつつ、各グループ内は優先度順に
+  function stableSortTasks(tasks) {
+    const subs = [];
+    const map = new Map();
+    tasks.forEach((t) => {
+      const key = t.sub || "__nosub__";
+      if (!map.has(key)) { map.set(key, []); subs.push(key); }
+      map.get(key).push(t);
+    });
+    const out = [];
+    subs.forEach((key) => {
+      const arr = map.get(key).slice().sort((a, b) => PRIORITY_ORDER[a.priority] - PRIORITY_ORDER[b.priority]);
+      out.push(...arr);
+    });
+    return out;
+  }
+
+  function renderTask(task) {
+    const isSkipped = !!state.skipped[task.id];
+    const row = document.createElement("label");
+    row.className = "task" + (state.checked[task.id] ? " done" : "") + (isSkipped ? " skipped" : "");
+
+    const cb = document.createElement("input");
+    cb.type = "checkbox";
+    cb.checked = !!state.checked[task.id];
+    cb.disabled = isSkipped;
+    cb.addEventListener("change", () => {
+      if (cb.checked) state.checked[task.id] = true;
+      else delete state.checked[task.id];
+      saveState();
+      // 再描画（進捗・カウント・フィルタ反映）
+      render();
+    });
+
+    const body = document.createElement("div");
+    body.className = "body";
+    const qty = task.qty ? `<span class="badge qty">目安 ${task.qty}</span>` : "";
+    const skippedBadge = isSkipped ? `<span class="badge skipped-badge">該当なし</span>` : "";
+    body.innerHTML =
+      `<div class="title-line"><span class="name">${escapeHtml(task.title)}</span>${priorityBadge(task.priority)}${qty}${skippedBadge}</div>` +
+      (isSkipped ? "" : dueBadge(task)) +
+      (task.note ? `<div class="note">${escapeHtml(task.note)}</div>` : "");
+
+    // 「該当なし」トグルボタン（地域・状況によって不要な項目を対象外にできる）
+    const skipBtn = document.createElement("button");
+    skipBtn.type = "button";
+    skipBtn.className = "skip-btn";
+    skipBtn.textContent = isSkipped ? "戻す" : "該当なし";
+    skipBtn.title = isSkipped ? "チェック対象に戻します" : "この項目を対象外にします（進捗の分母から外れます）";
+    skipBtn.addEventListener("click", (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      if (isSkipped) delete state.skipped[task.id];
+      else { state.skipped[task.id] = true; delete state.checked[task.id]; }
+      saveState();
+      render();
+    });
+
+    row.appendChild(cb);
+    row.appendChild(body);
+    row.appendChild(skipBtn);
+    return row;
+  }
+
+  function renderProgress() {
+    // 「該当なし」の項目は進捗の分母から外す
+    const active = TASKS.filter((t) => !state.skipped[t.id]);
+    const total = active.length;
+    const done = active.filter((t) => state.checked[t.id]).length;
+    const pct = total ? Math.round((done / total) * 100) : 0;
+    document.getElementById("progText").textContent = done;
+    document.getElementById("progTotal").textContent = total;
+    document.getElementById("progBar").style.width = pct + "%";
+  }
+
+  function escapeHtml(s) {
+    return String(s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+  }
+
+  // ===== イベント =====
+  document.getElementById("dueDate").addEventListener("change", (e) => {
+    state.dueDate = e.target.value; saveState(); render();
+  });
+  document.getElementById("birthDate").addEventListener("change", (e) => {
+    state.birthDate = e.target.value; saveState(); render();
+  });
+  document.querySelectorAll(".filters [data-filter]").forEach((b) => {
+    b.addEventListener("click", () => { currentFilter = b.dataset.filter; render(); });
+  });
+  document.getElementById("resetBtn").addEventListener("click", () => {
+    if (confirm("すべてのチェックを外します。よろしいですか？\n（入力した日付は残ります）")) {
+      state.checked = {}; saveState(); render();
+    }
+  });
+
+  render();
+</script>
